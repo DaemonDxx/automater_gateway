@@ -1,19 +1,29 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import * as Joi from 'joi';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validationSchema } from './utils/config/validation.schema';
+import { WinstonModule } from 'nest-winston';
+import { getTransports } from './utils/logger/transports';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: [
         '/etc/automater/production.env',
         './config/production.env',
         './config/development.env',
       ],
       validationSchema: validationSchema,
+    }),
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: () => {
+        return {
+          transports: getTransports(process.env.NODE_ENV),
+        };
+      },
     }),
   ],
   controllers: [AppController],
