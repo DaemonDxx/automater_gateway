@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+    @@map("users")
+
+    id Int @id @default(autoincrement()) @unique
+    email String @db.VarChar(64) @unique
+    login String @db.VarChar(32) @unique
+    password String @db.VarChar(32)
+    plans UserPlan[]
+    tokens Token[]
+}
+
+enum TokenStatus {
+    ACTIVE
+    INACTIVE
+}
+
+model Token {
+    @@map("tokens")
+
+    id Int @id @default(autoincrement())
+    token String @db.VarChar(64)
+    status TokenStatus @default(ACTIVE)
+    user User @relation(fields: [user_id], references: [id])
+    user_id Int
+}
+
+model Limit {
+    @@map("limits")
+
+    max_file_count Int
+    max_file_size Int
+    max_active_report_count Int
+    plan Plan @relation(fields: [plan_id], references: [id])
+    plan_id Int @unique
+}
+
+model Plan {
+    @@map("plans")
+
+    id Int @id @default(autoincrement()) @unique
+    name String @db.VarChar(64)
+    description String
+    archive Boolean @default(false)
+    default Boolean @default(false)
+    limit Limit?
+    user_plans UserPlan[]
+}
+
+model UserPlan {
+    @@map("user_plans")
+
+    id Int @id @default(autoincrement()) @unique
+    start_at DateTime
+    valid_until DateTime
+    user User @relation(fields: [user_id], references: [id])
+    plan Plan @relation(fields: [plan_id], references: [id])
+    user_id Int
+    plan_id Int
+}
