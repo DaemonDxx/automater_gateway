@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validationSchema } from './utils/config/validation.schema';
 import { WinstonModule } from 'nest-winston';
 import { getTransports } from './utils/logger/transports';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { getTransports } from './utils/logger/transports';
         };
       },
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
