@@ -30,8 +30,9 @@ model Token {
     @@map("tokens")
 
     id Int @id @default(autoincrement())
-    token String @db.VarChar(64)
+    token String?
     status TokenStatus @default(ACTIVE)
+    create_at DateTime @default(now())
     user User @relation(fields: [user_id], references: [id])
     user_id Int
 }

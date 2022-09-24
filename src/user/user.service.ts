@@ -52,4 +52,24 @@ export class UserService {
       throw new DatabaseError(e.message);
     }
   }
+
+  async findByLogin(login: string): Promise<UserEntity> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          login,
+        },
+      });
+      return new UserEntity(user);
+    } catch (e) {
+      this.logger.error(
+        `Find user by login error: ${e.message}`,
+        {
+          login,
+        },
+        UserService.name,
+      );
+      throw new DatabaseError(e.message);
+    }
+  }
 }
