@@ -8,6 +8,7 @@ async function bootstrap() {
   const logger = app.get<Logger>(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   await app.listen(process.env.PORT);
 }
 bootstrap();
