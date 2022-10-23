@@ -29,7 +29,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(login, password);
     if (!user) {
       this.logger.warn(`Login failed - ${login}`, LocalStrategy.name);
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Неверный логин или пароль');
     }
     return user;
   }
