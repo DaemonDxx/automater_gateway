@@ -19,18 +19,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
+
     const token = extractTokenFromCtx(context);
     if (!token)
       throw new UnauthorizedException('Отсутствует токен в заголовках');
 
     if (!(await this.tokenService.isTokenActive(token)))
       throw new UnauthorizedException('Токен не активен');
-
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if (isPublic) return true;
     return super.canActivate(context) as Promise<boolean>;
   }
 }
