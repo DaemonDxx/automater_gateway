@@ -1,5 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ReportStatus } from '@prisma/client';
+import { Report, ReportStatus } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReportEntity } from './entity/report.entity';
@@ -20,16 +20,18 @@ export class ReportService {
     dto: CreateReportDto,
   ): Promise<ReportEntity> {
     try {
-      return await this.prisma.report.create({
-        data: {
-          ...dto,
-          owner: {
-            connect: {
-              id: owner,
+      return new ReportEntity(
+        await this.prisma.report.create({
+          data: {
+            ...dto,
+            owner: {
+              connect: {
+                id: owner,
+              },
             },
           },
-        },
-      });
+        }),
+      );
     } catch (e) {
       this.logger.error(
         `Cannot create new report with params ${dto}: ${e.message}`,
@@ -40,11 +42,13 @@ export class ReportService {
 
   async getReportByID(id: number): Promise<ReportEntity> {
     try {
-      return await this.prisma.report.findUnique({
-        where: {
-          id,
-        },
-      });
+      return new ReportEntity(
+        await this.prisma.report.findUnique({
+          where: {
+            id,
+          },
+        }),
+      );
     } catch (e) {
       this.logger.error(
         `Cannot find report by id ${id}: ${e.message}`,
@@ -56,7 +60,10 @@ export class ReportService {
 
   async find(params: ReportQueryParams): Promise<ReportEntity[]> {
     try {
-      return await this.prisma.report.findMany(params);
+      const toEntity = (report: Report): ReportEntity =>
+        new ReportEntity(report);
+      const result = await this.prisma.report.findMany(params);
+      return result.map(toEntity);
     } catch (e) {
       this.logger.error(
         `Cannot find report with params ${params}: ${e.message}`,
@@ -67,14 +74,16 @@ export class ReportService {
 
   async deleteReportByID(id: number): Promise<ReportEntity> {
     try {
-      return await this.prisma.report.update({
-        where: {
-          id,
-        },
-        data: {
-          status: ReportStatus.DELETED,
-        },
-      });
+      return new ReportEntity(
+        await this.prisma.report.update({
+          where: {
+            id,
+          },
+          data: {
+            status: ReportStatus.DELETED,
+          },
+        }),
+      );
     } catch (e) {
       if (e.code === 'P2025') throw new ReportNotFoundError(id);
       this.logger.error(
