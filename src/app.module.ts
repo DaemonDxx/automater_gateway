@@ -9,17 +9,14 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule } from './database/database.module';
+import { DEVELOPMENT_CONFIG_PATH, PRODUCTION_CONFIG_PATH } from './index';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        '/etc/automater/production.env',
-        './config/production.env',
-        './config/development.env',
-      ],
+      envFilePath: [PRODUCTION_CONFIG_PATH, DEVELOPMENT_CONFIG_PATH],
       validationSchema: validationSchema,
     }),
     WinstonModule.forRootAsync({
