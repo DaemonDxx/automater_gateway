@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from '../user/user.service';
 import { AuthController } from './auth.controller';
 import { TokenService } from './token.service';
-import { PrismaService } from '../database/prisma.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -28,7 +27,6 @@ import { PassportModule } from '@nestjs/passport';
     LocalStrategy,
     JwtStrategy,
     TokenService,
-    PrismaService,
   ],
   controllers: [AuthController],
   exports: [AuthService, TokenService],

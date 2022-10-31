@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { ConnectionManager } from './utils/connection-manager';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -18,12 +19,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   async onModuleInit() {
     this.logger.log('Prisma client start connect...', PrismaService.name);
+    const manager = new ConnectionManager(this, this.logger);
     try {
-      await this.$connect();
-      this.logger.log('Prisma client connected', PrismaService.name);
+      await manager.connect(3, 1500);
+      this.logger.log(`Prisma client connected`, PrismaService.name);
     } catch (e) {
       this.logger.error(
-        `Prisma client connection error: ${e.message}`,
+        `Cannot connection to DB: ${e.message}`,
         e.stack,
         PrismaService.name,
       );

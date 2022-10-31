@@ -8,6 +8,7 @@ import { getTransports } from './utils/logger/transports';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
+import { DatabaseModule } from './database/database.module';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 
 @Module({
@@ -29,6 +30,7 @@ import { JwtAuthGuard } from './auth/guards/jwt.guard';
         };
       },
     }),
+    DatabaseModule,
     UserModule,
     AuthModule,
   ],
