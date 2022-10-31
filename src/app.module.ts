@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule } from './database/database.module';
 import { DEVELOPMENT_CONFIG_PATH, PRODUCTION_CONFIG_PATH } from './index';
+import { ReportModule } from './report/report.module';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 
 @Module({
@@ -29,6 +30,7 @@ import { JwtAuthGuard } from './auth/guards/jwt.guard';
     }),
     DatabaseModule,
     UserModule,
+    ReportModule,
     AuthModule,
   ],
   controllers: [AppController],

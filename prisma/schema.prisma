@@ -19,6 +19,7 @@ model User {
     password String @db.VarChar(32)
     plans UserPlan[]
     tokens Token[]
+    reports Report[]
 }
 
 enum TokenStatus {
@@ -69,4 +70,22 @@ model UserPlan {
     plan Plan @relation(fields: [plan_id], references: [id])
     user_id Int
     plan_id Int
+}
+
+enum ReportStatus {
+    ACTIVE
+    INACTIVE
+    DELETED
+}
+
+model Report {
+    @@map("reports")
+
+    id Int @id @default(autoincrement()) @unique
+    title String @db.VarChar(128) @default("Untitled")
+    status ReportStatus @default(ACTIVE)
+    create_at DateTime @default(now())
+    update_at DateTime @default(now())
+    owner User @relation(fields: [owner_id], references: [id])
+    owner_id Int
 }
