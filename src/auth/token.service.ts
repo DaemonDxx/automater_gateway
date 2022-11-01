@@ -82,7 +82,7 @@ export class TokenService {
         token,
       },
     });
-    if (!token) throw new TokenNotFindError(token);
+    if (!result) throw new TokenNotFindError(token);
     return result.status === TokenStatus.ACTIVE;
   }
 }
