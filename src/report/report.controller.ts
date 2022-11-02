@@ -3,10 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
-  ParseIntPipe,
   Post,
   Query,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { ReportEntity } from './entity/report.entity';
@@ -14,8 +13,11 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { ExtractUser } from '../auth/decorators/extract-user.decorator';
 import { UserWithoutPassword } from '../user/entity/user.entity';
 import { ReportService } from './report.service';
+import { OwnerGuard } from '../owner-checker/owner.guard';
 import { defaultFindReportDto, FindReportDto } from './dto/find-report.dto';
 import { InitPipe } from '../utils/pipes/init.pipe';
+import { ReportID } from './decorators/report-id.decorator';
+import { REPORT_ID_PARAM_ROUTE } from './index';
 
 @Controller()
 @UseGuards(OwnerGuard)
@@ -36,9 +38,7 @@ export class ReportController {
   }
 
   @Get(`/:${REPORT_ID_PARAM_ROUTE}`)
-  async getReportInfo(
-    @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<ReportEntity> {
+  async getReportInfo(@ReportID() id: number): Promise<ReportEntity> {
     return this.reportService.getReportByID(id);
   }
 
@@ -51,9 +51,7 @@ export class ReportController {
   }
 
   @Delete(`/:${REPORT_ID_PARAM_ROUTE}`)
-  async deleteReport(
-    @Param('id', new ParseIntPipe()) id: number,
-  ): Promise<ReportEntity> {
+  async deleteReport(@ReportID() id: number): Promise<ReportEntity> {
     return this.reportService.deleteReportByID(id);
   }
 }
