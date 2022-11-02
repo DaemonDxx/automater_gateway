@@ -40,6 +40,10 @@ import { JwtAuthGuard } from './auth/guards/jwt.guard';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    {
+      provide: APP_FILTER,
+      useClass: DatabaseErrorFilter,
+    },
   ],
 })
 export class AppModule {}
