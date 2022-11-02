@@ -17,7 +17,8 @@ import { ReportService } from './report.service';
 import { defaultFindReportDto, FindReportDto } from './dto/find-report.dto';
 import { InitPipe } from '../utils/pipes/init.pipe';
 
-@Controller('report')
+@Controller()
+@UseGuards(OwnerGuard)
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
@@ -34,7 +35,7 @@ export class ReportController {
     return this.reportService.find(query);
   }
 
-  @Get('/:id')
+  @Get(`/:${REPORT_ID_PARAM_ROUTE}`)
   async getReportInfo(
     @Param('id', new ParseIntPipe()) id: number,
   ): Promise<ReportEntity> {
@@ -49,7 +50,7 @@ export class ReportController {
     return this.reportService.createReport(user.id, dto);
   }
 
-  @Delete(':id')
+  @Delete(`/:${REPORT_ID_PARAM_ROUTE}`)
   async deleteReport(
     @Param('id', new ParseIntPipe()) id: number,
   ): Promise<ReportEntity> {

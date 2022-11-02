@@ -7,7 +7,7 @@ import { JwtAuthGuard } from './guards/jwt.guard';
 import { Public } from './decorators/public.decorator';
 import { ExtractToken } from './decorators/extract-token.decorator';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

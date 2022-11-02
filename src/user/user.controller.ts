@@ -15,7 +15,7 @@ import { Public } from '../auth/decorators/public.decorator';
 import { UserWithoutPassword } from './entity/user.entity';
 import { ExtractUser } from '../auth/decorators/extract-user.decorator';
 
-@Controller('user')
+@Controller()
 export class UserController {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
