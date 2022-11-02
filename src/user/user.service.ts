@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { PrismaService } from '../database/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { DatabaseError } from '../database/errors/database.error';
 import { UserExistError } from './errors/user-exist.error';
 import { UserEntity } from './entity/user.entity';
 
@@ -17,59 +16,34 @@ export class UserService {
     if (await this.isUserExist(dto)) {
       throw new UserExistError();
     }
-    try {
-      const user = await this.prisma.user.create({
-        data: dto,
-      });
-      return new UserEntity(user);
-    } catch (e) {
-      this.logger.error(
-        `Create user error: ${e.message}`,
-        dto,
-        UserService.name,
-      );
-      throw new DatabaseError(e.message);
-    }
+    const user = await this.prisma.user.create({
+      data: dto,
+    });
+    return new UserEntity(user);
   }
 
   async isUserExist(dto: CreateUserDto): Promise<boolean> {
-    try {
-      const user = await this.prisma.user.findMany({
-        where: {
-          OR: [
-            {
-              email: dto.email,
-            },
-            {
-              login: dto.login,
-            },
-          ],
-        },
-      });
-      return user.length !== 0;
-    } catch (e) {
-      this.logger.error(`Find user error: ${e.message}`, dto, UserService.name);
-      throw new DatabaseError(e.message);
-    }
+    const user = await this.prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            email: dto.email,
+          },
+          {
+            login: dto.login,
+          },
+        ],
+      },
+    });
+    return user.length !== 0;
   }
 
   async findByLogin(login: string): Promise<UserEntity> {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          login,
-        },
-      });
-      return new UserEntity(user);
-    } catch (e) {
-      this.logger.error(
-        `Find user by login error: ${e.message}`,
-        {
-          login,
-        },
-        UserService.name,
-      );
-      throw new DatabaseError(e.message);
-    }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        login,
+      },
+    });
+    return new UserEntity(user);
   }
 }
