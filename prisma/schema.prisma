@@ -48,6 +48,39 @@ model Limit {
     plan_id Int @unique
 }
 
+enum FileStatus {
+    CREATED
+    DOWNLOADED
+    IN_PROGRESS
+    PROCESSED
+    MARK_DELETE
+    DELETED
+}
+
+model File {
+    @@map("files")
+
+    id Int @id @default(autoincrement()) @unique
+    name String @db.VarChar(256)
+    status FileStatus @default(CREATED)
+    create_at DateTime @default(now())
+    slot Slot @relation("FileOfSlot", fields: [slot_id], references: [id])
+    active_for_slot Slot? @relation("ActiveFile")
+    meta FileMeta? @relation()
+    slot_id Int
+}
+
+model FileMeta {
+    @@map("file_meta")
+
+    id Int @id @default(autoincrement()) @unique
+    size Int
+    mime String @db.VarChar
+    path String
+    file File @relation(fields: [file_id], references: [id])
+    file_id Int @unique
+}
+
 model Plan {
     @@map("plans")
 
@@ -87,5 +120,32 @@ model Report {
     create_at DateTime @default(now())
     update_at DateTime @default(now())
     owner User @relation(fields: [owner_id], references: [id])
+    slots Slot[]
     owner_id Int
+}
+
+enum SlotType {
+    SOURCE
+    TEMPLATE
+    OUTPUT
+}
+
+enum SlotStatus {
+    ACTIVE
+    DELETED
+}
+
+model Slot {
+    @@map("slots")
+
+    id Int @id @default(autoincrement()) @unique
+    name String @db.VarChar(256)
+    report Report @relation(fields: [report_id], references: [id])
+    active_file File? @relation("ActiveFile", fields: [active_file_id], references: [id])
+    files File[] @relation("FileOfSlot")
+    type SlotType
+    status SlotStatus @default(ACTIVE)
+
+    report_id Int
+    active_file_id Int? @unique
 }

@@ -9,6 +9,7 @@ import { OwnerCheckerService } from './owner-checker.service';
 import { Request } from 'express';
 import { UserWithoutPassword } from '../user/entity/user.entity';
 import { REPORT_ID_PARAM_ROUTE } from '../report';
+import { SLOT_ID_PARAM_ROUTE } from '../slot';
 
 @Injectable()
 export class OwnerGuard implements CanActivate {
@@ -25,6 +26,12 @@ export class OwnerGuard implements CanActivate {
       switch (key) {
         case REPORT_ID_PARAM_ROUTE:
           isOwner = await this.ownerCheckerService.userIsOwnerReport(
+            user,
+            parsedValue,
+          );
+          break;
+        case SLOT_ID_PARAM_ROUTE:
+          isOwner = await this.ownerCheckerService.userIsOwnerSlot(
             user,
             parsedValue,
           );
