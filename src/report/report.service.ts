@@ -5,7 +5,6 @@ import { CreateReportDto } from './dto/create-report.dto';
 import { ReportEntity } from './entity/report.entity';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { ReportQueryParams } from './dto/find-report.dto';
-import { ReportNotFoundError } from './errors/report-not-found.error';
 
 @Injectable()
 export class ReportService {
