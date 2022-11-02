@@ -1,7 +1,10 @@
 import { Report } from '@prisma/client';
-import { IsOptional } from 'class-validator';
+import { IsEmpty, IsOptional } from 'class-validator';
 
-export class CreateReportDto implements Pick<Report, 'title'> {
+export class CreateReportDto implements Pick<Report, 'title' | 'owner_id'> {
   @IsOptional()
   title: string;
+
+  @IsEmpty()
+  owner_id: number;
 }

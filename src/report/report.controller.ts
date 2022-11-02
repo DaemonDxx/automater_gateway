@@ -47,7 +47,8 @@ export class ReportController {
     @Body() dto: CreateReportDto,
     @ExtractUser() user: UserWithoutPassword,
   ): Promise<ReportEntity> {
-    return this.reportService.createReport(user.id, dto);
+    dto.owner_id = user.id;
+    return this.reportService.createReport(dto);
   }
 
   @Delete(`/:${REPORT_ID_PARAM_ROUTE}`)
