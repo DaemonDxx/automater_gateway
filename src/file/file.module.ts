@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { OwnerCheckerModule } from '../owner-checker/owner-checker.module';
 import { CustomStorageEngine } from '../storage/storage.engine';
@@ -15,11 +16,12 @@ import { FileService } from './file.service';
         StorageModule.registerAsync({
           imports: [
             LocalStorageModule.registerAsync({
-              useFactory: async () => {
+              useFactory: async (config: ConfigService) => {
                 return {
-                  root: './storage',
+                  root: config.get('LOCAL_STORAGE_ROOT'),
                 };
               },
+              inject: [ConfigService],
             }),
           ],
           useFactory: async (storageService: LocalStorageService) => {
