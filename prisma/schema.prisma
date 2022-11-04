@@ -48,39 +48,6 @@ model Limit {
     plan_id Int @unique
 }
 
-enum FileStatus {
-    CREATED
-    DOWNLOADED
-    IN_PROGRESS
-    PROCESSED
-    MARK_DELETE
-    DELETED
-}
-
-model File {
-    @@map("files")
-
-    id Int @id @default(autoincrement()) @unique
-    name String @db.VarChar(256)
-    status FileStatus @default(CREATED)
-    create_at DateTime @default(now())
-    slot Slot @relation("FileOfSlot", fields: [slot_id], references: [id])
-    active_for_slot Slot? @relation("ActiveFile")
-    meta FileMeta? @relation()
-    slot_id Int
-}
-
-model FileMeta {
-    @@map("file_meta")
-
-    id Int @id @default(autoincrement()) @unique
-    size Int
-    mime String @db.VarChar
-    path String
-    file File @relation(fields: [file_id], references: [id])
-    file_id Int @unique
-}
-
 model Plan {
     @@map("plans")
 
@@ -156,4 +123,37 @@ model Slot {
 
     report_id Int
     active_file_id Int? @unique
+}
+
+enum FileStatus {
+    CREATED
+    DOWNLOADED
+    IN_PROGRESS
+    PROCESSED
+    MARK_DELETE
+    DELETED
+}
+
+model File {
+    @@map("files")
+
+    id Int @id @default(autoincrement()) @unique
+    name String @db.VarChar(256)
+    status FileStatus @default(CREATED)
+    create_at DateTime @default(now())
+    slot Slot @relation("FileOfSlot", fields: [slot_id], references: [id])
+    active_for_slot Slot? @relation("ActiveFile")
+    meta FileMeta? @relation()
+    slot_id Int
+}
+
+model FileMeta {
+    @@map("file_meta")
+
+    id Int @id @default(autoincrement()) @unique
+    size Int
+    mime String @db.VarChar
+    path String
+    file File @relation(fields: [file_id], references: [id])
+    file_id Int @unique
 }

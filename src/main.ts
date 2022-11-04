@@ -1,7 +1,7 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { AppModule } from './app.module';
 import { GlobalValidationPipe } from './utils/pipes/global-validation.pipe';
 
 async function bootstrap() {
@@ -16,4 +16,5 @@ async function bootstrap() {
   app.enableCors();
   await app.listen(process.env.PORT);
 }
+
 bootstrap();

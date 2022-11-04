@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
+import { FileModule } from '../file/file.module';
+import { OwnerCheckerModule } from '../owner-checker/owner-checker.module';
 import { SlotController } from './slot.controller';
 import { SlotService } from './slot.service';
-import { OwnerCheckerModule } from '../owner-checker/owner-checker.module';
 
 @Module({
-  imports: [OwnerCheckerModule],
+  imports: [FileModule, OwnerCheckerModule],
   providers: [SlotService],
   controllers: [SlotController],
   exports: [SlotService],
