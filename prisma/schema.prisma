@@ -124,6 +124,14 @@ model Report {
     owner_id Int
 }
 
+model FilePath {
+    @@map("file_path")
+
+    id Int @id @default(autoincrement()) @unique
+    path String
+    file_id Int @unique
+}
+
 enum SlotType {
     SOURCE
     TEMPLATE
