@@ -4,8 +4,8 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { SLOT_ID_PARAM_ROUTE } from '../index';
 import { SlotIdMissedError } from '../errors/slot-id-missed.error';
+import { SLOT_ID_PARAM_ROUTE } from '../index';
 
 const ExtractSlotID = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
