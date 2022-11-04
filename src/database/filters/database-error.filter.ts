@@ -6,8 +6,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { Response } from 'express';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 type DatabaseErrorResponse = {
   statusCode: number;
@@ -24,7 +24,11 @@ export class DatabaseErrorFilter implements ExceptionFilter {
     exception: Prisma.PrismaClientKnownRequestError,
     host: ArgumentsHost,
   ): any {
-    this.logger.error(exception.message, exception.stack, DatabaseErrorFilter);
+    this.logger.error(
+      exception.message,
+      exception.stack,
+      DatabaseErrorFilter.name,
+    );
     const ctx = host.switchToHttp();
     const res: Response = ctx.getResponse();
     const jsonResponse = DatabaseErrorFilter.getResponseError(exception);
