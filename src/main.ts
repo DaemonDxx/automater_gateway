@@ -14,7 +14,9 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
-  await app.listen(process.env.PORT);
+
+  const configService = app.get<ConfigService>(ConfigService);
+  await app.listen(configService.get('port'));
 }
 
 bootstrap();

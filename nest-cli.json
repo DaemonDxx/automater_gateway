@@ -4,9 +4,14 @@
   "compilerOptions": {
     "assets": [
       {
-        "include": "../config/*.env",
+        "include": "../config/*.yaml",
         "outDir": "./dist/config"
-      }],
+      },
+      {
+        "include": "../proto/*.proto",
+        "outDir": "./dist/proto"
+      }
+    ],
     "watchAssets": true
   }
 }

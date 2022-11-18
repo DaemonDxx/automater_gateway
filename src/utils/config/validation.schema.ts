@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
 export const validationSchema = Joi.object({
-  NODE_ENV: Joi.string()
+  env: Joi.string()
     .valid('development', 'production', 'test')
     .default('development'),
-  PORT: Joi.number().default(3000),
-  JWT_SECRET_KEY: Joi.string().required(),
+  port: Joi.number().default(3000),
+  jwt_secret_key: Joi.string().required(),
 });
