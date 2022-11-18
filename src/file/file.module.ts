@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { OwnerCheckerModule } from '../owner-checker/owner-checker.module';
+import { GrpcStorageModule } from '../storage/implimentation/grpc-storage/grpc-storage.module';
+import { GrpcStorageService } from '../storage/implimentation/grpc-storage/grpc-storage.service';
 import { CustomStorageEngine } from '../storage/storage.engine';
 import { StorageModule } from '../storage/storage.module';
-import { LocalStorageModule } from '../storage/storages/local-storage/local-storage.module';
-import { LocalStorageService } from '../storage/storages/local-storage/local-storage.service';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 
@@ -15,21 +15,22 @@ import { FileService } from './file.service';
       imports: [
         StorageModule.registerAsync({
           imports: [
-            LocalStorageModule.registerAsync({
-              useFactory: async (config: ConfigService) => {
-                return {
-                  root: config.get('LOCAL_STORAGE_ROOT'),
-                };
+            GrpcStorageModule.registerAsync({
+              useFactory: (config: ConfigService) => {
+                return config.get<{
+                  host: string;
+                  port: number;
+                }>('storage');
               },
               inject: [ConfigService],
             }),
           ],
-          useFactory: async (storageService: LocalStorageService) => {
+          useFactory: async (storageService: GrpcStorageService) => {
             return {
               service: storageService,
             };
           },
-          inject: [LocalStorageService],
+          inject: [GrpcStorageService],
         }),
       ],
       useFactory: async (storageEngine: CustomStorageEngine) => {

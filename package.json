@@ -21,10 +21,13 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.7.3",
+    "@grpc/proto-loader": "^0.7.3",
     "@nestjs/common": "^9.1.6",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.1.6",
     "@nestjs/jwt": "^9.0.0",
+    "@nestjs/microservices": "^9.2.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.1.6",
     "@prisma/client": "^4.5.0",
@@ -39,6 +42,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "ts-proto": "^1.131.0",
     "winston": "^3.8.2"
   },
   "devDependencies": {

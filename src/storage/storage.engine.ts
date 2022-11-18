@@ -5,6 +5,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { FILE_ID_PARAM_ROUTE } from '../file';
 import { StorageModuleConfig } from './config.interface';
 import { UploadedFileMeta } from './index';
+import { FileMeta } from './storage.interface';
 import { MODULE_OPTIONS_TOKEN } from './storage.module-definition';
 
 @Injectable()
@@ -21,10 +22,17 @@ export class CustomStorageEngine implements Multer.StorageEngine {
     file: Express.Multer.File,
     callback: (error?: any, info?: UploadedFileMeta) => void,
   ): Promise<void> {
-    let id: number;
     try {
-      id = CustomStorageEngine.extractFileID(req);
-      const { hash, size } = await this.config.service.save(id, file.stream);
+      const id = CustomStorageEngine.extractFileID(req);
+      const meta: FileMeta = {
+        filename: file.originalname,
+        extension: CustomStorageEngine.extractFileExtension(file.originalname),
+      };
+      const { hash, size } = await this.config.service.save(
+        id,
+        file.stream,
+        meta,
+      );
       callback(null, {
         filename: file.originalname,
         originalname: file.originalname,
@@ -33,11 +41,6 @@ export class CustomStorageEngine implements Multer.StorageEngine {
         size,
       });
     } catch (e) {
-      this.logger.error(
-        `Cannot save file ${id}: ${e.message}`,
-        e.stack,
-        CustomStorageEngine.name,
-      );
       callback(e);
     }
   }
@@ -48,21 +51,19 @@ export class CustomStorageEngine implements Multer.StorageEngine {
     return id;
   }
 
+  private static extractFileExtension(filename: string): string {
+    return filename.split('.').at(-1);
+  }
+
   async _removeFile(
     req: Request,
     file: Express.Multer.File,
     callback: (error: Error | null) => void,
   ): Promise<void> {
-    let id: number;
     try {
-      id = CustomStorageEngine.extractFileID(req);
+      const id = CustomStorageEngine.extractFileID(req);
       await this.config.service.delete(id);
     } catch (e) {
-      this.logger.error(
-        `Cannot delete file ${id}: ${e.message}`,
-        e.stack,
-        CustomStorageEngine.name,
-      );
       callback(e);
     }
   }
