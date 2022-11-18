@@ -1,0 +1,46 @@
+syntax = 'proto3';
+
+package Storage;
+option go_package="automater_storage/api";
+
+service StorageService {
+  rpc upload(stream UploadRequest) returns(UploadResponse);
+  rpc download(DownloadRequest) returns(stream DownloadResponse);
+  rpc delete(DeleteRequest) returns(Empty);
+}
+
+message Empty {}
+
+message Metadata {
+  int32 id = 1;
+  string filename = 2;
+  string extension = 3;
+}
+
+message File {
+  bytes data = 1;
+}
+
+message UploadRequest {
+  oneof uploadRequest {
+    Metadata meta = 1;
+    File chunk = 2;
+  }
+}
+
+message UploadResponse {
+  string hash = 1;
+  int32 size = 2;
+}
+
+message DownloadRequest {
+  int32 id = 1;
+}
+
+message DownloadResponse {
+    File chunk = 1;
+}
+
+message DeleteRequest {
+  int32 id = 1;
+}

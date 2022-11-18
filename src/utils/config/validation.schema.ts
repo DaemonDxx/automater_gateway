@@ -6,4 +6,5 @@ export const validationSchema = Joi.object({
     .default('development'),
   port: Joi.number().default(3000),
   jwt_secret_key: Joi.string().required(),
+  storage: Joi.object().required(),
 });
