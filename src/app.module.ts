@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, RouterModule } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { appRoutes } from './app.routes';
 import { AppService } from './app.service';
@@ -10,28 +11,32 @@ import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { DatabaseModule } from './database/database.module';
 import { DatabaseErrorFilter } from './database/filters/database-error.filter';
 import { FileModule } from './file/file.module';
-import { DEVELOPMENT_CONFIG_PATH, PRODUCTION_CONFIG_PATH } from './index';
 import { OwnerCheckerModule } from './owner-checker/owner-checker.module';
 import { ReportModule } from './report/report.module';
 import { SlotModule } from './slot/slot.module';
 import { UserModule } from './user/user.module';
 import { validationSchema } from './utils/config/validation.schema';
+import { YamlConfigLoaderBuilder } from './utils/config/yaml-config-builder';
 import { getTransports } from './utils/logger/transports';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [PRODUCTION_CONFIG_PATH, DEVELOPMENT_CONFIG_PATH],
-      validationSchema: validationSchema,
+      load: [
+        new YamlConfigLoaderBuilder()
+          .addPath(join(__dirname, 'config/config.development.yaml'))
+          .setValidation(validationSchema)
+          .build(),
+      ],
     }),
     WinstonModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: () => {
+      useFactory: (config: ConfigService) => {
         return {
-          transports: getTransports(process.env.NODE_ENV),
+          transports: getTransports(config.get('env')),
         };
       },
+      inject: [ConfigService],
     }),
     DatabaseModule,
     UserModule,
